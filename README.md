@@ -15,4 +15,4 @@ Firefox / Zen WebExtension that opens Trello card dialogs at 90% of the viewport
 
 ## Tweak
 
-Width lives in two places: `--twc-width` in `trello-wide.css` and `WIDTH` in `trello-wide.js`.
+Width is `90vw` in `trello-wide.css`.

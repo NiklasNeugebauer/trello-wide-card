@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Trello Wide Card",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Opens Trello card dialogs at 90% of the viewport width.",
   "browser_specific_settings": {
     "gecko": {
@@ -11,9 +11,12 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://trello.com/*"],
-      "css": ["trello-wide.css"],
-      "js": ["trello-wide.js"],
+      "matches": [
+        "https://trello.com/*"
+      ],
+      "css": [
+        "trello-wide.css"
+      ],
       "run_at": "document_start"
     }
   ]
