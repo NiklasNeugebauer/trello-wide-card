@@ -1,0 +1,27 @@
+/* Trello card back: open the dialog at 90% of the viewport width.
+   Hooks on the stable ids / data-testids Trello uses for the card back;
+   the hashed class names change with every deploy. */
+
+:root {
+  --twc-width: 90vw;
+}
+
+#layer-manager-card-back [role="dialog"],
+#layer-manager-card-back > div > div,
+div[data-testid="card-back-name"],
+div[data-testid="card-back-name"] > div,
+div[data-testid="card-back-name"] div:has(> header) {
+  width: var(--twc-width) !important;
+  max-width: var(--twc-width) !important;
+}
+
+#layer-manager-card-back > div > div {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* Let the main column grow into the new space instead of leaving a gap. */
+div[data-testid="card-back-name"] section,
+div[data-testid="card-back-name"] main {
+  max-width: none !important;
+}
