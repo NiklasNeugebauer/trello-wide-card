@@ -1,10 +1,7 @@
 /* Trello card back at 90% of the viewport width.
    The role="dialog" element is the positioned box, but its first child is
    the visible card and carries the fixed width, and the wrapper holding the
-   header is capped as well; both must follow the dialog. Inside, the main
-   column (620px basis) and the comments aside (460px inline width) are flex
-   siblings; weighting them 620:460 keeps Trello's default split at any
-   card width. */
+   header is capped as well; both must follow the dialog. */
 
 #layer-manager-card-back [role="dialog"] {
   width: 90vw !important;
@@ -17,20 +14,24 @@
   max-width: none !important;
 }
 
+/* The main column (620px basis) and the comments aside (460px) are flex
+   siblings that do not grow. Grow weights of 620:460 hand the extra width
+   to both in Trello's native proportion and leave Trello's own bases,
+   shrink behaviour and narrow-window layout untouched. */
+
 #layer-manager-card-back main[data-auto-scrollable] {
-  flex: 620 1 0px !important;
+  flex-grow: 620 !important;
   max-width: none !important;
 }
 
-#layer-manager-card-back main[data-auto-scrollable] ~ aside {
-  flex: 460 1 0px !important;
-  width: auto !important;
+#layer-manager-card-back aside:has(> [data-testid="card-back-panel"]) {
+  flex-grow: 460 !important;
   max-width: none !important;
 }
 
-/* The sections inside the main column are capped at the old column width. */
-#layer-manager-card-back main[data-auto-scrollable] > *,
-#layer-manager-card-back main[data-auto-scrollable] section {
+/* Trello caps the blocks directly inside the main column at its native
+   620px column width. */
+#layer-manager-card-back main[data-auto-scrollable] > * {
   width: auto !important;
   max-width: none !important;
 }
