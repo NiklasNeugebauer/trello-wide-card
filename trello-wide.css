@@ -1,12 +1,19 @@
 /* Trello card back at 90% of the viewport width.
-   The dialog box is the role="dialog" element inside the card-back layer;
-   Trello's own flex layer around it keeps it centred. Inside, the main
+   The role="dialog" element is the positioned box, but its first child is
+   the visible card and carries the fixed width, and the wrapper holding the
+   header is capped as well; both must follow the dialog. Inside, the main
    column is a flex item with a fixed 620px basis and must grow into the
    extra space; the comments aside keeps its own width. */
 
 #layer-manager-card-back [role="dialog"] {
   width: 90vw !important;
   max-width: 90vw !important;
+}
+
+#layer-manager-card-back [role="dialog"] > div,
+#layer-manager-card-back [role="dialog"] div:has(> header) {
+  width: 100% !important;
+  max-width: none !important;
 }
 
 #layer-manager-card-back main[data-auto-scrollable] {
