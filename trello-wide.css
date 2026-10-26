@@ -2,8 +2,9 @@
    The role="dialog" element is the positioned box, but its first child is
    the visible card and carries the fixed width, and the wrapper holding the
    header is capped as well; both must follow the dialog. Inside, the main
-   column is a flex item with a fixed 620px basis and must grow into the
-   extra space; the comments aside keeps its own width. */
+   column (620px basis) and the comments aside (460px inline width) are flex
+   siblings; weighting them 620:460 keeps Trello's default split at any
+   card width. */
 
 #layer-manager-card-back [role="dialog"] {
   width: 90vw !important;
@@ -17,6 +18,12 @@
 }
 
 #layer-manager-card-back main[data-auto-scrollable] {
-  flex: 1 1 auto !important;
+  flex: 620 1 0px !important;
+  max-width: none !important;
+}
+
+#layer-manager-card-back main[data-auto-scrollable] ~ aside {
+  flex: 460 1 0px !important;
+  width: auto !important;
   max-width: none !important;
 }
