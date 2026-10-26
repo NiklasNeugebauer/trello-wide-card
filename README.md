@@ -21,5 +21,5 @@ card back as of October 2026.
 ## Tweak
 
 Both knobs are in `trello-wide.css`: the dialog width (`90vw`) and the column split
-(the two `flex-grow` weights, 620 for the main column and 460 for comments).
+(the first number of the two `flex` shorthands, 620 for the main column and 460 for comments).
 Trello's own drag handle between the columns still works on top of that.
