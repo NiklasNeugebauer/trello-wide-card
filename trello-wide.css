@@ -27,3 +27,10 @@
   width: auto !important;
   max-width: none !important;
 }
+
+/* The sections inside the main column are capped at the old column width. */
+#layer-manager-card-back main[data-auto-scrollable] > *,
+#layer-manager-card-back main[data-auto-scrollable] section {
+  width: auto !important;
+  max-width: none !important;
+}
