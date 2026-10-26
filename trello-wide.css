@@ -17,15 +17,20 @@
 /* The main column (620px basis) and the comments aside (460px) are flex
    siblings that do not grow. Grow weights of 620:460 hand the extra width
    to both in Trello's native proportion and leave Trello's own bases,
-   shrink behaviour and narrow-window layout untouched. */
+   shrink behaviour and narrow-window layout untouched. min-width: 0 keeps
+   the split honest once the main column's blocks are uncapped below: a flex
+   item otherwise refuses to go under its content width and the aside pays
+   for it. */
 
 #layer-manager-card-back main[data-auto-scrollable] {
   flex-grow: 620 !important;
+  min-width: 0 !important;
   max-width: none !important;
 }
 
 #layer-manager-card-back aside:has(> [data-testid="card-back-panel"]) {
   flex-grow: 460 !important;
+  min-width: 0 !important;
   max-width: none !important;
 }
 
