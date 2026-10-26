@@ -1,15 +1,9 @@
-/* Trello card back: open the dialog at 90% of the viewport width.
-   Only the outer dialog box is touched here; trello-wide.js loosens
-   whatever inner max-width constraint Trello happens to use. */
+/* The dialog box itself is sized by trello-wide.js (it has no stable hook).
+   Here only the inner layout: the main column is a flex item with a fixed
+   620px basis and must grow into the wider box; the comments aside keeps
+   its own width. */
 
-:root {
-  --twc-width: 90vw;
-}
-
-#layer-manager-card-back [role="dialog"],
-#layer-manager-card-back > div > div {
-  width: var(--twc-width) !important;
-  max-width: var(--twc-width) !important;
-  margin-left: auto !important;
-  margin-right: auto !important;
+#layer-manager-card-back main[data-auto-scrollable] {
+  flex: 1 1 auto !important;
+  max-width: none !important;
 }

@@ -1,50 +1,57 @@
 // Trello's card back has no stable hook on the element that carries the width,
-// so find it by geometry: the outermost ancestor of the card content that is
-// narrower than the viewport is the dialog box. Pin that one, then loosen any
-// pixel max-width inside it that would keep the content from filling the box.
+// so find it by geometry: the outermost ancestor of the card's main column that
+// is narrower than the viewport is the dialog box. Pin that box to WIDTH and
+// centre it, and let the wrappers between box and main column size to it.
 
 const WIDTH = '90vw';
-const INNER_SCAN_DEPTH = 6;
+const MARK = 'data-trello-wide-card';
 
-let widenedBox = null;
-
-function pin(el) {
-  el.style.setProperty('width', WIDTH, 'important');
-  el.style.setProperty('max-width', WIDTH, 'important');
-  el.style.setProperty('margin-left', 'auto', 'important');
-  el.style.setProperty('margin-right', 'auto', 'important');
-}
-
-function loosen(el, boxWidth, depth) {
-  if (depth > INNER_SCAN_DEPTH) return;
-  for (const child of el.children) {
-    const max = parseFloat(getComputedStyle(child).maxWidth);
-    if (!Number.isNaN(max) && max < boxWidth) {
-      child.style.setProperty('max-width', 'none', 'important');
-    }
-    loosen(child, boxWidth, depth + 1);
+function pin(box) {
+  const s = box.style;
+  s.setProperty('width', WIDTH, 'important');
+  s.setProperty('max-width', WIDTH, 'important');
+  s.setProperty('margin-left', 'auto', 'important');
+  s.setProperty('margin-right', 'auto', 'important');
+  const position = getComputedStyle(box).position;
+  if (position === 'absolute' || position === 'fixed') {
+    s.setProperty('left', '0', 'important');
+    s.setProperty('right', '0', 'important');
+    s.setProperty('transform', 'none', 'important');
   }
 }
 
 function widen() {
   const layer = document.getElementById('layer-manager-card-back');
-  const name = layer && layer.querySelector('div[data-testid="card-back-name"]');
-  if (!name) {
-    widenedBox = null;
-    return;
-  }
+  const main = layer && layer.querySelector('main[data-auto-scrollable]');
+  if (!main || main.hasAttribute(MARK)) return;
   const vw = document.documentElement.clientWidth;
+  const chain = [];
   let box = null;
-  for (let el = name; el && el !== layer; el = el.parentElement) {
+  for (let el = main; el && el !== layer; el = el.parentElement) {
+    chain.push(el);
     if (el.getBoundingClientRect().width < vw * 0.95) box = el;
   }
-  if (!box || box === widenedBox) return;
-  widenedBox = box;
+  if (!box) return;
+  main.setAttribute(MARK, '');
   pin(box);
-  requestAnimationFrame(() => loosen(box, box.getBoundingClientRect().width, 0));
+  for (const el of chain) {
+    if (el === box) break;
+    el.style.setProperty('width', 'auto', 'important');
+    el.style.setProperty('max-width', 'none', 'important');
+  }
+  main.style.setProperty('flex', '1 1 auto', 'important');
+  main.style.setProperty('max-width', 'none', 'important');
 }
 
-const observer = new MutationObserver(widen);
+let scheduled = false;
+const observer = new MutationObserver(() => {
+  if (scheduled) return;
+  scheduled = true;
+  requestAnimationFrame(() => {
+    scheduled = false;
+    widen();
+  });
+});
 
 function start() {
   observer.observe(document.documentElement, { childList: true, subtree: true });
