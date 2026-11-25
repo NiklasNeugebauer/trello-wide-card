@@ -9,12 +9,18 @@ card back as of October 2026.
 
 ## Install
 
-**Permanent (Zen, LibreWolf and other builds without forced signing):**
+**Permanent:** signed as an unlisted add-on on addons.mozilla.org. Store your
+[AMO API credentials](https://addons.mozilla.org/developers/addon/api/key/) in the keyring once:
 
-1. `about:config` → set `xpinstall.signatures.required` to `false`.
-2. `./build.sh`, then open `about:addons` → gear icon → *Install Add-on From File…* → pick `trello-wide-card.xpi`.
+```sh
+secret-tool store --label="AMO JWT issuer" service amo key issuer
+secret-tool store --label="AMO JWT secret" service amo key secret
+```
 
-**Temporary (any Firefox 121+, lost on restart):**
+Then bump `version` in `manifest.json`, run `./sign.sh` (uses `web-ext` via `mise`), and open
+the resulting `.xpi` in the browser.
+
+**Temporary (any Firefox 142+, lost on restart):**
 
 `about:debugging#/runtime/this-firefox` → *Load Temporary Add-on…* → pick `manifest.json`.
 
