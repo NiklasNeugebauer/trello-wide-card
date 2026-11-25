@@ -1,0 +1,47 @@
+name: Sign and attach to release
+
+# Publishing a GitHub release tagged vX.Y.Z signs that version as an unlisted add-on on
+# addons.mozilla.org and attaches the .xpi plus the updates.json the manifest's update_url reads.
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  sign:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TAG: ${{ github.event.release.tag_name }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Set version from tag
+        run: |
+          version="${TAG#v}"
+          echo "VERSION=$version" >> "$GITHUB_ENV"
+          echo "ADDON_ID=$(jq -r .browser_specific_settings.gecko.id src/manifest.json)" >> "$GITHUB_ENV"
+          jq --arg v "$version" '.version = $v' src/manifest.json > manifest.tmp
+          mv manifest.tmp src/manifest.json
+
+      - name: Sign on addons.mozilla.org
+        env:
+          WEB_EXT_API_KEY: ${{ secrets.AMO_JWT_ISSUER }}
+          WEB_EXT_API_SECRET: ${{ secrets.AMO_JWT_SECRET }}
+        run: npx --yes web-ext@10.8.0 sign --source-dir src --channel unlisted --artifacts-dir web-ext-artifacts
+
+      - name: Attach to release
+        run: |
+          xpi="${GITHUB_REPOSITORY#*/}-$VERSION.xpi"
+          mv web-ext-artifacts/*.xpi "$xpi"
+          jq -n --arg id "$ADDON_ID" --arg v "$VERSION" \
+            --arg link "https://github.com/$GITHUB_REPOSITORY/releases/download/$TAG/$xpi" \
+            '{addons: {($id): {updates: [{version: $v, update_link: $link}]}}}' > updates.json
+          gh release upload "$TAG" "$xpi" updates.json --clobber

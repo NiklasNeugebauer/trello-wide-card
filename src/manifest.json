@@ -11,7 +11,8 @@
         "required": [
           "none"
         ]
-      }
+      },
+      "update_url": "https://github.com/NiklasNeugebauer/trello-wide-card/releases/latest/download/updates.json"
     }
   },
   "content_scripts": [

@@ -9,23 +9,22 @@ card back as of October 2026.
 
 ## Install
 
-**Permanent:** signed as an unlisted add-on on addons.mozilla.org. Store your
-[AMO API credentials](https://addons.mozilla.org/developers/addon/api/key/) in the keyring once:
+**Permanent:** open the `.xpi` from the
+[latest release](https://github.com/NiklasNeugebauer/trello-wide-card/releases/latest) in
+Firefox 142+ or Zen. It is signed as an unlisted add-on and updates itself from later releases.
 
-```sh
-secret-tool store --label="AMO JWT issuer" service amo key issuer
-secret-tool store --label="AMO JWT secret" service amo key secret
-```
+**Temporary (lost on restart):**
 
-Then bump `version` in `manifest.json`, run `./sign.sh` (uses `web-ext` via `mise`), and open
-the resulting `.xpi` in the browser.
+`about:debugging#/runtime/this-firefox` → *Load Temporary Add-on…* → pick `src/manifest.json`.
 
-**Temporary (any Firefox 142+, lost on restart):**
+## Release
 
-`about:debugging#/runtime/this-firefox` → *Load Temporary Add-on…* → pick `manifest.json`.
+Publish a GitHub release tagged `vX.Y.Z`. The workflow sets that version, signs it on
+addons.mozilla.org (repo secrets `AMO_JWT_ISSUER` / `AMO_JWT_SECRET`) and attaches the `.xpi`
+and `updates.json` to the release. Every version can only be signed once.
 
 ## Tweak
 
-Both knobs are in `trello-wide.css`: the dialog width (`90vw`) and the column split
+Both knobs are in `src/trello-wide.css`: the dialog width (`90vw`) and the column split
 (the first number of the two `flex` shorthands, 620 for the main column and 460 for comments).
 Trello's own drag handle between the columns still works on top of that.

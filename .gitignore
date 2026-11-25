@@ -1,3 +1,4 @@
 *.xpi
 web-ext-artifacts/
 .amo-upload-uuid
+sign.log
